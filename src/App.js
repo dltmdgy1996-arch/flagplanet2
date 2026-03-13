@@ -313,7 +313,7 @@ const PodiumCard=memo(function PodiumCard({c,pdIdx,voteCount,pct,canVote,isMe,on
 
       {/* 받침대 */}
       <div style={{
-        width:"80%",height:p.ph,
+        width:"80%",height:isMobile?Math.round(p.ph*0.45):p.ph,
         background:`linear-gradient(175deg,${p.pc1},${p.pc2})`,
         borderTop:`2px solid ${p.ac}35`,
         border:`1px solid ${p.ac}20`,
@@ -369,7 +369,15 @@ export default function App(){
   const [showAlready,setShowAlready]=useState(false);
   const [isMobile,setIsMobile]=useState(()=>window.innerWidth<768);
   const [showSidebar,setShowSidebar]=useState(false);
+  const [showPopupAd,setShowPopupAd]=useState(false);
   const countdown=useCountdown();
+
+  // 모바일 팝업 광고: 10초 후 자동 표시
+  useEffect(()=>{
+    if(!isMobile)return;
+    const t=setTimeout(()=>setShowPopupAd(true),10000);
+    return()=>clearTimeout(t);
+  },[isMobile]);
   const celebRef=useRef(null);
 
   useEffect(()=>{
@@ -536,6 +544,7 @@ export default function App(){
         @keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-50px) scale(0.4)}}
         @keyframes shakeX{0%,100%{transform:translate(-50%,-50%)}30%{transform:translate(calc(-50% - 5px),-50%)}70%{transform:translate(calc(-50% + 5px),-50%)}}
         @keyframes slideIn{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+        @keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
         input::placeholder{color:#252540}
         ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-thumb{background:#151530;border-radius:2px}
         .rc{transition:background 0.1s,border-color 0.1s;}
@@ -545,6 +554,20 @@ export default function App(){
         .vsm{transition:opacity 0.1s,transform 0.1s;}
         .vsm:hover{opacity:0.82;transform:scale(1.04);}
       `}</style>
+
+      {/* 모바일 하단 팝업 광고 */}
+      {isMobile&&showPopupAd&&(
+        <div style={{position:"fixed",bottom:0,left:0,right:0,zIndex:999,background:"#07070d",borderTop:"1px solid #1e1e38",padding:"10px 14px 16px",boxShadow:"0 -4px 30px rgba(0,0,0,0.7)",animation:"slideUp 0.35s ease"}}>
+          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:8}}>
+            <span style={{fontSize:9,color:"#2d2d50",fontWeight:700,letterSpacing:"0.1em"}}>📢 ADVERTISEMENT</span>
+            <button onClick={()=>setShowPopupAd(false)} style={{background:"#111120",border:"1px solid #252540",borderRadius:6,color:"#6b7280",fontSize:12,width:22,height:22,cursor:"pointer",fontWeight:700,lineHeight:"22px",textAlign:"center",padding:0}}>✕</button>
+          </div>
+          {/* ★ AdSense 승인 후 여기에 320×100 광고 코드 붙여넣기 ★ */}
+          <div id="popup-ad-mobile" style={{width:"100%",minHeight:60,background:"#0a0a18",border:"1px dashed #1e1e38",borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center"}}>
+            <span style={{fontSize:9,color:"#2d2d50"}}>[ AdSense 승인 후 광고 코드 삽입 ]</span>
+          </div>
+        </div>
+      )}
 
       {/* 상단 광고 */}
       <div style={{background:"#07070d",borderBottom:"1px solid #111120",padding:"6px 14px",display:"flex",alignItems:"center",justifyContent:"center",gap:8,flexShrink:0}}>
