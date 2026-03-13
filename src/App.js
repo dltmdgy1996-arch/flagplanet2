@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { useState, useEffect, useRef, useCallback, memo } from "react";
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, onValue, runTransaction, get } from "firebase/database";
+import { getDatabase, ref, onValue, runTransaction, get, set, update } from "firebase/database";
 
 /* ═══════════ Firebase 설정 ═══════════ */
 const firebaseConfig = {
@@ -406,6 +406,46 @@ export default function App(){
   useEffect(()=>{
     const fn=()=>setIsMobile(window.innerWidth<768);
     window.addEventListener("resize",fn);return()=>window.removeEventListener("resize",fn);
+  },[]);
+
+  // ── Firebase 초기 데이터 시드 (DB가 비어있을 때만 1회 실행) ──
+  useEffect(()=>{
+    const seedData={
+      // 글로벌 탑
+      "jungkook":18420,"lisa_bp":17850,"jimin_bts":16990,"v_bts":16540,"im_youngwoong":15800,
+      "ronaldo":15200,"messi":14300,"taylor":13800,"mrbeast":12500,"jennie_bp":12200,
+      // 케이팝 강세
+      "wonyoung_ive":11800,"iu_solo":11400,"rose_bp":10900,"jisoo_bp":10200,"karina_aespa":9800,
+      "suga_bts":9500,"jhope_bts":9200,"rm_bts":8900,"jin_bts":8600,"son_heungmin":8400,
+      "gdragon":8100,"taemin":7900,"baekhyun_exo":7600,"hyunjin_skz":7400,"felix_skz":7100,
+      "yeonjun_txt":6900,"taeyong_nct":6700,"wonwoo_svt":6500,"nayeon_twice":6300,"tzuyu_twice":6100,
+      "winter_aespa":5900,"soyeon_gidle":5700,"ryujin_itzy":5500,"minji_nj":5400,"hanni_nj":5200,
+      "yujin_ive":5100,"heeseung_enhy":4900,"irene_rv":4800,"kai_exo":4700,"hongjoong":4600,
+      "wonbin_riize":4400,"kazuha_lsrfm":4200,"minju_illit":4100,"hanbin_zb1":4000,"bangchan_skz":3900,
+      // 트롯
+      "youngtak":7200,"lee_chanwon":6800,
+      // 글로벌
+      "beyonce":8200,"billie":7800,"ariana":7500,"selena":7100,"dua_lipa":6800,
+      "sabrina":6500,"olivia":6200,"lady_gaga":5900,"adele":5600,"shakira":5400,
+      "harry_styles":5200,"justin_bieber":5000,"ed_sheeran":4800,"weeknd":4600,"drake":4400,
+      "kendrick":4200,"travis_scott":4000,"bad_bunny":3800,"sza":3600,"lana":3500,
+      "doja_cat":3400,"miley":3200,"zendaya":3100,"timothee":2900,"dwayne":2800,
+      // 스포츠
+      "kylian":7200,"haaland":6800,"mo_salah":6400,"neymar":6100,"stephen_curry":5800,
+      "virat":5500,"dhoni":5200,"conor":4900,"roger_federer":4600,"son_heungmin":8400,
+      // 크리에이터/기타
+      "ishowspeed":6900,"pewdiepie":5800,"ksi":5200,"kai_cenat":4800,"markiplier":4200,
+      "khaby":3800,"charli":3500,"bella_poarch":3200,"kylie":3000,"kendall":2800,
+      "elon_musk":3500,"shahrukh":3200,"priyanka":2900,"jay_chou":2700,"gem_deng":2500,
+      "ado_jp":3100,"kenshi_yonezu":2800,"yoasobi":2600,
+    };
+    const seedRef=ref(db,"__seeded__");
+    get(seedRef).then(snap=>{
+      if(!snap.exists()){
+        update(ref(db,"votes"),seedData);
+        set(seedRef,true);
+      }
+    });
   },[]);
 
   // Firebase 실시간 투표 수신
