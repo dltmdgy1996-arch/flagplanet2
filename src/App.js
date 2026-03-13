@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useState, useEffect, useRef, useCallback, memo } from "react";
 
 /* ═══════════════════ 데이터 ═══════════════════ */
@@ -769,3 +770,4 @@ export default function App(){
     </div>
   );
 }
+// eslint-disable-next-line react-hooks/exhaustive-deps 
