@@ -18,14 +18,14 @@ export default function Privacy() {
   return (
     <div style={s.wrap}>
       <div style={s.inner}>
-        <button style={s.back} onClick={() => window.location.href = "/"}>← Back to VoteStar 2025</button>
+        <button style={s.back} onClick={() => window.location.href = "/"}>← Back to VoteStar 2026</button>
 
         <div style={s.badge}>Legal</div>
         <h1 style={s.h1}>Privacy Policy</h1>
-        <p style={s.date}>Last updated: January 1, 2025</p>
+        <p style={s.date}>Last updated: January 1, 2026</p>
 
         <p style={s.p}>
-          Welcome to <strong style={{color:"#f1f5f9"}}>VoteStar 2025</strong> ("we", "our", or "us"). This Privacy Policy explains how we collect, use, and protect your information when you use our website at <strong style={{color:"#f1f5f9"}}>votestar2025.com</strong> (the "Service").
+          Welcome to <strong style={{color:"#f1f5f9"}}>VoteStar 2026</strong> ("we", "our", or "us"). This Privacy Policy explains how we collect, use, and protect your information when you use our website at <strong style={{color:"#f1f5f9"}}>votestar2026.com</strong> (the "Service").
         </p>
         <p style={s.p}>By using our Service, you agree to the collection and use of information in accordance with this policy.</p>
 
@@ -53,7 +53,7 @@ export default function Privacy() {
 
         <h2 style={s.h2}>2. How We Use Your Information</h2>
         <ul style={s.ul}>
-          <li style={s.li}>To operate and improve the VoteStar 2025 service</li>
+          <li style={s.li}>To operate and improve the VoteStar 2026 service</li>
           <li style={s.li}>To prevent vote fraud (daily vote limit enforcement)</li>
           <li style={s.li}>To analyze traffic and usage patterns via Google Analytics</li>
           <li style={s.li}>To display relevant advertisements via Google AdSense</li>
@@ -115,11 +115,11 @@ export default function Privacy() {
         <h2 style={s.h2}>10. Contact Us</h2>
         <p style={s.p}>
           If you have any questions about this Privacy Policy, please contact us at:<br/>
-          <strong style={{color:"#f1f5f9"}}>votestar2025.com/contact</strong>
+          <strong style={{color:"#f1f5f9"}}>votestar2026.com/contact</strong>
         </p>
 
         <div style={s.footer}>
-          © 2025 VoteStar 2025 · <a href="/terms" style={s.link}>Terms of Service</a> · <a href="/" style={s.link}>Back to Home</a>
+          © 2026 VoteStar 2026 · <a href="/terms" style={s.link}>Terms of Service</a> · <a href="/" style={s.link}>Back to Home</a>
         </div>
       </div>
     </div>

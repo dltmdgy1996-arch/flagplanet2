@@ -19,21 +19,21 @@ export default function Terms() {
   return (
     <div style={s.wrap}>
       <div style={s.inner}>
-        <button style={s.back} onClick={() => window.location.href = "/"}>← Back to VoteStar 2025</button>
+        <button style={s.back} onClick={() => window.location.href = "/"}>← Back to VoteStar 2026</button>
 
         <div style={s.badge}>Legal</div>
         <h1 style={s.h1}>Terms of Service</h1>
-        <p style={s.date}>Last updated: January 1, 2025</p>
+        <p style={s.date}>Last updated: January 1, 2026</p>
 
         <div style={s.highlight}>
           <p style={{...s.p, marginBottom:0, color:"#fbbf24"}}>
-            ⚠️ Please read these Terms of Service carefully before using VoteStar 2025. By accessing or using our service, you agree to be bound by these terms.
+            ⚠️ Please read these Terms of Service carefully before using VoteStar 2026. By accessing or using our service, you agree to be bound by these terms.
           </p>
         </div>
 
         <h2 style={s.h2}>1. Acceptance of Terms</h2>
         <p style={s.p}>
-          By accessing and using <strong style={{color:"#f1f5f9"}}>VoteStar 2025</strong> ("the Service", "the Site") at votestar2025.com, you accept and agree to be bound by these Terms of Service and our <a href="/privacy" style={s.link}>Privacy Policy</a>.
+          By accessing and using <strong style={{color:"#f1f5f9"}}>VoteStar 2026</strong> ("the Service", "the Site") at votestar2026.com, you accept and agree to be bound by these Terms of Service and our <a href="/privacy" style={s.link}>Privacy Policy</a>.
         </p>
         <p style={s.p}>
           If you do not agree to these terms, please do not use our Service.
@@ -41,7 +41,7 @@ export default function Terms() {
 
         <h2 style={s.h2}>2. Description of Service</h2>
         <p style={s.p}>
-          VoteStar 2025 is a free online fan voting platform that allows users to vote for their favorite global celebrities, athletes, content creators, and public figures. The Service includes:
+          VoteStar 2026 is a free online fan voting platform that allows users to vote for their favorite global celebrities, athletes, content creators, and public figures. The Service includes:
         </p>
         <ul style={s.ul}>
           <li style={s.li}>Real-time fan voting with live leaderboards</li>
@@ -62,7 +62,7 @@ export default function Terms() {
         <p style={s.p}>We reserve the right to reset, adjust, or remove votes if manipulation is detected.</p>
 
         <h2 style={s.h2}>4. User Conduct</h2>
-        <p style={s.p}>When using VoteStar 2025, you agree NOT to:</p>
+        <p style={s.p}>When using VoteStar 2026, you agree NOT to:</p>
         <ul style={s.ul}>
           <li style={s.li}>Use the Service for any unlawful purpose</li>
           <li style={s.li}>Attempt to gain unauthorized access to any part of the Service</li>
@@ -74,10 +74,10 @@ export default function Terms() {
 
         <h2 style={s.h2}>5. Intellectual Property</h2>
         <p style={s.p}>
-          The VoteStar 2025 website, including its design, code, graphics, and content created by us, is owned by VoteStar 2025 and protected by intellectual property laws.
+          The VoteStar 2026 website, including its design, code, graphics, and content created by us, is owned by VoteStar 2026 and protected by intellectual property laws.
         </p>
         <p style={s.p}>
-          Candidate names, images, and likenesses belong to the respective individuals or rights holders. VoteStar 2025 does not claim ownership of any celebrity, athlete, or public figure's name or likeness featured on this site.
+          Candidate names, images, and likenesses belong to the respective individuals or rights holders. VoteStar 2026 does not claim ownership of any celebrity, athlete, or public figure's name or likeness featured on this site.
         </p>
         <p style={s.p}>
           You may share links to our Service on social media. You may not reproduce, distribute, or create derivative works from our original content without permission.
@@ -98,7 +98,7 @@ export default function Terms() {
 
         <h2 style={s.h2}>7. Limitation of Liability</h2>
         <p style={s.p}>
-          To the fullest extent permitted by law, VoteStar 2025 shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of profits, data, or goodwill, arising from your use of or inability to use the Service.
+          To the fullest extent permitted by law, VoteStar 2026 shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including but not limited to loss of profits, data, or goodwill, arising from your use of or inability to use the Service.
         </p>
 
         <h2 style={s.h2}>8. Third-Party Content & Advertising</h2>
@@ -127,11 +127,11 @@ export default function Terms() {
         <h2 style={s.h2}>12. Contact Us</h2>
         <p style={s.p}>
           If you have any questions about these Terms of Service, please contact us at:<br/>
-          <strong style={{color:"#f1f5f9"}}>votestar2025.com</strong>
+          <strong style={{color:"#f1f5f9"}}>votestar2026.com</strong>
         </p>
 
         <div style={s.footer}>
-          © 2025 VoteStar 2025 · <a href="/privacy" style={s.link}>Privacy Policy</a> · <a href="/" style={s.link}>Back to Home</a>
+          © 2026 VoteStar 2026 · <a href="/privacy" style={s.link}>Privacy Policy</a> · <a href="/" style={s.link}>Back to Home</a>
         </div>
       </div>
     </div>
