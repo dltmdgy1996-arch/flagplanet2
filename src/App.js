@@ -1,5 +1,20 @@
 /* eslint-disable */
 import { useState, useEffect, useRef, useCallback, memo } from "react";
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, onValue, runTransaction, get } from "firebase/database";
+
+/* ═══════════ Firebase 설정 ═══════════ */
+const firebaseConfig = {
+  apiKey: "AIzaSyA9G6mBUk0sW4d4-vtig07tbqASySqAznY",
+  authDomain: "votestar2026.firebaseapp.com",
+  databaseURL: "https://votestar2026-default-rtdb.firebaseio.com",
+  projectId: "votestar2026",
+  storageBucket: "votestar2026.firebasestorage.app",
+  messagingSenderId: "235013740627",
+  appId: "1:235013740627:web:71639574152091b6b0ea6",
+};
+const firebaseApp = initializeApp(firebaseConfig);
+const db = getDatabase(firebaseApp);
 
 /* ═══════════════════ 데이터 ═══════════════════ */
 const CANDS = [
@@ -210,15 +225,14 @@ const PDM=[
   {i:2,medal:"🥉",crown:"🥉",label:"3RD",sub:"",       ph:100,pc1:"#431407",pc2:"#2c0a02",ac:"#cd7f32"},
 ];
 
-/* ─── 포디엄 카드: voteCount/pct만 prop으로 받아 숫자 바뀔 때만 리렌더 ─── */
+/* ─── 포디엄 카드 (모바일 30% 추가 축소 + 디자인 개선) ─── */
 const PodiumCard=memo(function PodiumCard({c,pdIdx,voteCount,pct,canVote,isMe,onVote,isMobile}){
   const p=PDM[pdIdx];
   const isFirst=pdIdx===0;
-  const sz=isFirst?(isMobile?52:68):(isMobile?38:52);
+  const sz=isFirst?(isMobile?0:68):(isMobile?0:52);
   const [sparks,setSparks]=useState([]);
   const prevRef=useRef(voteCount);
 
-  // 1등 파티클
   useEffect(()=>{
     if(!isFirst)return;
     if(voteCount-prevRef.current>30){
@@ -228,9 +242,70 @@ const PodiumCard=memo(function PodiumCard({c,pdIdx,voteCount,pct,canVote,isMe,on
     }
   },[voteCount,isFirst]);
 
+  if(isMobile){
+    // ── 모바일 전용 초슬림 카드 ──
+    return(
+      <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-end",flex:isFirst?1.3:1,minWidth:0}}>
+        <div
+          onClick={()=>onVote(c)}
+          style={{
+            width:"100%",position:"relative",
+            background:isFirst?`linear-gradient(160deg,${c.color}28,${c.color}08)`:`${c.color}0a`,
+            border:`${isFirst?"2px":"1px"} solid ${c.color}${isFirst?"60":"25"}`,
+            borderRadius:isFirst?10:7,
+            padding:isFirst?"5px 3px":"3px 2px",
+            textAlign:"center",cursor:canVote?"pointer":"default",
+            boxShadow:isFirst?`0 0 20px ${c.color}35,inset 0 1px 0 ${c.color}20`:"none",
+          }}
+        >
+          {isFirst&&<div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse at 50% 0%,${c.color}20,transparent 70%)`,pointerEvents:"none",borderRadius:10,zIndex:0}}/>}
+          {isMe&&<div style={{position:"absolute",top:2,right:2,fontSize:5,background:"#1e1b4b",color:"#a5b4fc",borderRadius:3,padding:"1px 3px",fontWeight:700,zIndex:3}}>MY</div>}
+          {sparks.map(s=>(
+            <div key={s.id} style={{position:"absolute",left:`${s.x}%`,top:"5%",fontSize:10,pointerEvents:"none",zIndex:5,animation:"floatUp 1.3s ease forwards"}}>{s.e}</div>
+          ))}
+          <div style={{position:"relative",zIndex:1}}>
+            {/* 메달만 표시 */}
+            <div style={{fontSize:isFirst?15:11,lineHeight:1,filter:isFirst?"drop-shadow(0 0 6px gold)":""}}>{p.medal}</div>
+            {/* 이름 */}
+            <div style={{fontSize:isFirst?6:5,fontWeight:800,color:"#f1f5f9",marginTop:2,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",padding:"0 1px",lineHeight:1.2}}>{c.name}</div>
+            {/* 투표 버튼 */}
+            {canVote?(
+              <button
+                onClick={e=>{e.stopPropagation();onVote(c);}}
+                style={{
+                  marginTop:3,width:"100%",border:"none",borderRadius:5,
+                  padding:isFirst?"4px 1px":"2px 1px",
+                  color:"#fff",fontWeight:800,cursor:"pointer",
+                  fontSize:isFirst?7:6,
+                  background:isFirst?`linear-gradient(135deg,${c.color},${c.color}cc)`:`linear-gradient(135deg,${c.color}99,${c.color}55)`,
+                  boxShadow:isFirst?`0 2px 10px ${c.color}44`:"none",
+                }}>
+                {isFirst?"⭐ VOTE":"Vote"}
+              </button>
+            ):isMe?(
+              <div style={{marginTop:2,fontSize:6,color:"#a5b4fc",fontWeight:700}}>✅ Voted</div>
+            ):null}
+          </div>
+        </div>
+        {/* 받침대 — 아주 얇게 */}
+        <div style={{
+          width:"75%",height:Math.round(p.ph*0.055),
+          background:`linear-gradient(175deg,${p.pc1},${p.pc2})`,
+          borderRadius:"2px 2px 0 0",
+          display:"flex",alignItems:"center",justifyContent:"center",
+          boxShadow:`inset 0 2px 6px rgba(0,0,0,0.5)`,
+          position:"relative",overflow:"hidden",
+        }}>
+          <div style={{position:"absolute",top:0,left:0,right:0,height:2,background:`linear-gradient(90deg,transparent,${p.ac}50,transparent)`}}/>
+          <span style={{fontSize:7,fontWeight:900,color:p.ac,letterSpacing:"0.05em"}}>{p.label}</span>
+        </div>
+      </div>
+    );
+  }
+
+  // ── 웹 버전 (기존 유지) ──
   return(
     <div style={{display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"flex-end",flex:isFirst?1.2:1,minWidth:0}}>
-      {/* 카드 */}
       <div
         onClick={()=>onVote(c)}
         style={{
@@ -238,7 +313,7 @@ const PodiumCard=memo(function PodiumCard({c,pdIdx,voteCount,pct,canVote,isMe,on
           background:isFirst?`linear-gradient(160deg,${c.color}22,${c.color}06)`:`${c.color}08`,
           border:`${isFirst?"2px":"1.5px"} solid ${c.color}${isFirst?"55":"28"}`,
           borderRadius:isFirst?18:12,
-          padding:isFirst?(isMobile?"11px 7px":"15px 11px"):(isMobile?"8px 5px":"11px 7px"),
+          padding:isFirst?"15px 11px":"11px 7px",
           textAlign:"center",cursor:canVote?"pointer":"default",
           boxShadow:isFirst?`0 0 60px ${c.color}45,0 10px 40px rgba(0,0,0,0.65),inset 0 1px 0 ${c.color}25`
             :isMe?`0 0 14px ${c.color}22`:`0 2px 10px rgba(0,0,0,0.35)`,
@@ -248,82 +323,30 @@ const PodiumCard=memo(function PodiumCard({c,pdIdx,voteCount,pct,canVote,isMe,on
         onMouseEnter={e=>{if(!canVote&&!isFirst)return;e.currentTarget.style.transform="translateY(-8px)";e.currentTarget.style.boxShadow=isFirst?`0 0 90px ${c.color}65,0 22px 55px rgba(0,0,0,0.75)`:`0 0 28px ${c.color}40`;}}
         onMouseLeave={e=>{e.currentTarget.style.transform="translateY(0)";e.currentTarget.style.boxShadow=isFirst?`0 0 60px ${c.color}45,0 10px 40px rgba(0,0,0,0.65),inset 0 1px 0 ${c.color}25`:isMe?`0 0 14px ${c.color}22`:`0 2px 10px rgba(0,0,0,0.35)`;}}
       >
-        {/* 1등 광채 */}
         {isFirst&&<div style={{position:"absolute",inset:0,background:`radial-gradient(ellipse at 50% -10%,${c.color}30,transparent 60%)`,pointerEvents:"none",borderRadius:18,zIndex:0}}/>}
-
-        {/* MY VOTE 배지 */}
         {isMe&&<div style={{position:"absolute",top:5,right:5,fontSize:7,background:"#1e1b4b",color:"#a5b4fc",borderRadius:4,padding:"1px 4px",fontWeight:700,border:"1px solid #312e81",zIndex:3}}>MY VOTE</div>}
-
-        {/* 파티클 */}
         {sparks.map(s=>(
           <div key={s.id} style={{position:"absolute",left:`${s.x}%`,top:"5%",fontSize:13,pointerEvents:"none",zIndex:5,animation:"floatUp 1.3s ease forwards"}}>{s.e}</div>
         ))}
-
         <div style={{position:"relative",zIndex:1}}>
-          {/* 왕관 */}
-          <div style={{fontSize:isFirst?(isMobile?16:20):(isMobile?11:14),lineHeight:1.1,marginBottom:1}}>
-            {isFirst?"👑":pdIdx===1?"🥈":"🥉"}
-          </div>
-          {/* 메달 */}
-          <div style={{fontSize:isFirst?(isMobile?28:36):(isMobile?19:24),lineHeight:1,marginBottom:3,filter:isFirst?"drop-shadow(0 0 12px gold) drop-shadow(0 0 6px gold)":""}}>{p.medal}</div>
-
-          {/* 도넛 */}
-          <div style={{display:"flex",justifyContent:"center"}}>
-            <Donut pct={pct} color={c.color} size={sz}/>
-          </div>
-
-          {/* 이름 */}
-          <div style={{fontSize:isFirst?(isMobile?10:13):(isMobile?8:10),fontWeight:800,color:"#f1f5f9",marginTop:5,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",padding:"0 2px"}}>{c.name}</div>
-          <div style={{fontSize:isMobile?7:8,color:c.color,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",marginTop:1}}>{c.group}</div>
-          <div style={{fontSize:isMobile?6:7,color:"#4b5563",marginTop:1}}>{c.nat}</div>
-
-          {/* 득표 배지 */}
-          <div style={{
-            margin:"5px auto 0",display:"inline-block",
-            fontSize:isFirst?(isMobile?10:12):(isMobile?8:9),
-            fontWeight:800,fontFamily:"monospace",
-            color:isFirst?"#fbbf24":"#d1d5db",
-            background:isFirst?"rgba(251,191,36,0.13)":"rgba(255,255,255,0.05)",
-            border:`1px solid ${isFirst?"rgba(251,191,36,0.3)":"rgba(255,255,255,0.07)"}`,
-            borderRadius:7,padding:"2px 7px",
-          }}>{voteCount.toLocaleString()}</div>
-
-          {/* 버튼 */}
+          <div style={{fontSize:isFirst?20:14,lineHeight:1.1,marginBottom:1}}>{isFirst?"👑":pdIdx===1?"🥈":"🥉"}</div>
+          <div style={{fontSize:isFirst?36:24,lineHeight:1,marginBottom:3,filter:isFirst?"drop-shadow(0 0 12px gold) drop-shadow(0 0 6px gold)":""}}>{p.medal}</div>
+          <div style={{display:"flex",justifyContent:"center"}}><Donut pct={pct} color={c.color} size={sz}/></div>
+          <div style={{fontSize:isFirst?13:10,fontWeight:800,color:"#f1f5f9",marginTop:5,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",padding:"0 2px"}}>{c.name}</div>
+          <div style={{fontSize:8,color:c.color,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",marginTop:1}}>{c.group}</div>
+          <div style={{fontSize:7,color:"#4b5563",marginTop:1}}>{c.nat}</div>
+          <div style={{margin:"5px auto 0",display:"inline-block",fontSize:isFirst?12:9,fontWeight:800,fontFamily:"monospace",color:isFirst?"#fbbf24":"#d1d5db",background:isFirst?"rgba(251,191,36,0.13)":"rgba(255,255,255,0.05)",border:`1px solid ${isFirst?"rgba(251,191,36,0.3)":"rgba(255,255,255,0.07)"}`,borderRadius:7,padding:"2px 7px"}}>{voteCount.toLocaleString()}</div>
           {canVote?(
-            <button
-              onClick={e=>{e.stopPropagation();onVote(c);}}
-              onMouseEnter={e=>{e.currentTarget.style.opacity="0.82";e.currentTarget.style.transform="scale(1.04)";}}
-              onMouseLeave={e=>{e.currentTarget.style.opacity="1";e.currentTarget.style.transform="scale(1)";}}
-              style={{
-                marginTop:7,width:"100%",border:"none",borderRadius:9,
-                padding:isFirst?(isMobile?"8px 2px":"10px 2px"):(isMobile?"5px 2px":"7px 2px"),
-                color:"#fff",fontWeight:800,cursor:"pointer",fontFamily:"'Syne',sans-serif",
-                fontSize:isFirst?(isMobile?9:11):(isMobile?8:9),
-                background:isFirst?`linear-gradient(135deg,${c.color},${c.color}bb)`:`linear-gradient(135deg,${c.color}88,${c.color}44)`,
-                boxShadow:isFirst?`0 4px 20px ${c.color}55`:"none",
-                transition:"opacity 0.15s,transform 0.15s",
-              }}>
+            <button onClick={e=>{e.stopPropagation();onVote(c);}} onMouseEnter={e=>{e.currentTarget.style.opacity="0.82";e.currentTarget.style.transform="scale(1.04)";}} onMouseLeave={e=>{e.currentTarget.style.opacity="1";e.currentTarget.style.transform="scale(1)";}}
+              style={{marginTop:7,width:"100%",border:"none",borderRadius:9,padding:isFirst?"10px 2px":"7px 2px",color:"#fff",fontWeight:800,cursor:"pointer",fontFamily:"'Syne',sans-serif",fontSize:isFirst?11:9,background:isFirst?`linear-gradient(135deg,${c.color},${c.color}bb)`:`linear-gradient(135deg,${c.color}88,${c.color}44)`,boxShadow:isFirst?`0 4px 20px ${c.color}55`:"none",transition:"opacity 0.15s,transform 0.15s"}}>
               {isFirst?"⭐ VOTE NOW ⭐":"Vote 🗳️"}
             </button>
-          ):isMe?(
-            <div style={{marginTop:5,fontSize:9,color:"#a5b4fc",fontWeight:700}}>✅ Your Vote</div>
-          ):null}
+          ):isMe?(<div style={{marginTop:5,fontSize:9,color:"#a5b4fc",fontWeight:700}}>✅ Your Vote</div>):null}
         </div>
       </div>
-
-      {/* 받침대 */}
-      <div style={{
-        width:"80%",height:isMobile?Math.round(p.ph*0.45):p.ph,
-        background:`linear-gradient(175deg,${p.pc1},${p.pc2})`,
-        borderTop:`2px solid ${p.ac}35`,
-        border:`1px solid ${p.ac}20`,
-        borderRadius:"3px 3px 0 0",
-        display:"flex",flexDirection:"column",alignItems:"center",paddingTop:9,gap:1,
-        boxShadow:`inset 0 3px 10px rgba(0,0,0,0.5),0 0 22px ${p.ac}0d`,
-        position:"relative",overflow:"hidden",
-      }}>
+      <div style={{width:"80%",height:p.ph,background:`linear-gradient(175deg,${p.pc1},${p.pc2})`,borderTop:`2px solid ${p.ac}35`,border:`1px solid ${p.ac}20`,borderRadius:"3px 3px 0 0",display:"flex",flexDirection:"column",alignItems:"center",paddingTop:9,gap:1,boxShadow:`inset 0 3px 10px rgba(0,0,0,0.5),0 0 22px ${p.ac}0d`,position:"relative",overflow:"hidden"}}>
         <div style={{position:"absolute",top:0,left:0,right:0,height:3,background:`linear-gradient(90deg,transparent,${p.ac}40,transparent)`}}/>
-        <span style={{fontSize:isMobile?13:17,fontWeight:900,color:p.ac,letterSpacing:"0.06em",fontFamily:"Syne,Arial"}}>{p.label}</span>
+        <span style={{fontSize:17,fontWeight:900,color:p.ac,letterSpacing:"0.06em",fontFamily:"Syne,Arial"}}>{p.label}</span>
         {p.sub&&<span style={{fontSize:7,color:p.ac,opacity:0.45,letterSpacing:"0.1em"}}>{p.sub}</span>}
       </div>
     </div>
@@ -385,6 +408,24 @@ export default function App(){
     window.addEventListener("resize",fn);return()=>window.removeEventListener("resize",fn);
   },[]);
 
+  // Firebase 실시간 투표 수신
+  useEffect(()=>{
+    const votesDbRef=ref(db,"votes");
+    const unsub=onValue(votesDbRef,(snapshot)=>{
+      const data=snapshot.val()||{};
+      // Firebase 데이터로 로컬 ref 업데이트
+      Object.keys(data).forEach(id=>{
+        if(data[id]>=(votesRef.current[id]||0)){
+          votesRef.current[id]=data[id];
+        }
+      });
+      totalRef.current=Object.values(votesRef.current).reduce((a,b)=>a+b,0);
+      setSnap({...votesRef.current});
+      setSnapTotal(totalRef.current);
+    });
+    return()=>unsub();
+  },[]);
+
   // ── 시뮬레이션: Ref만 업데이트, 리렌더 없음 ──
   useEffect(()=>{
     const pool=CANDS.flatMap(c=>Array(Math.max(1,Math.round(c.v/2500000))).fill(c));
@@ -416,6 +457,8 @@ export default function App(){
     votesRef.current[c.id]=(votesRef.current[c.id]||0)+1;
     totalRef.current+=1;
     saveVote(c.id);
+    const voteRef=ref(db,`votes/${c.id}`);
+    runTransaction(voteRef,(current)=>(current||0)+1);
     tickerItemsRef.current=[{name:c.name,nat:c.nat,color:c.color},...tickerItemsRef.current].slice(0,60);
     setRecent(prev=>[{cid:c.id,t:"just now"},...prev].slice(0,14));
     setSnap({...votesRef.current});
@@ -628,9 +671,9 @@ export default function App(){
         <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden",minWidth:0}}>
 
           {/* 포디엄 */}
-          <div style={{padding:isMobile?"7px 5px 0":"9px 12px 0",background:"linear-gradient(180deg,#0c0916,#06060e)",flexShrink:0,borderBottom:"1px solid #111120"}}>
+          <div style={{padding:isMobile?"2px 4px 0":"9px 12px 0",background:"linear-gradient(180deg,#0c0916,#06060e)",flexShrink:0,borderBottom:"1px solid #111120"}}>
             <div style={{textAlign:"center",marginBottom:isMobile?3:6}}>
-              <span style={{fontSize:isMobile?8:10,fontWeight:700,color:"#2d2d50",letterSpacing:"0.12em"}}>🏆 TOP 3 LEADERBOARD</span>
+              <span style={{fontSize:isMobile?0:10,fontWeight:700,color:"#2d2d50",letterSpacing:"0.12em"}}>🏆 TOP 3 LEADERBOARD</span>
             </div>
             <div style={{display:"flex",alignItems:"flex-end",gap:isMobile?3:5}}>
               {top3[1]&&<PodiumCard c={top3[1]} pdIdx={1} voteCount={snap[top3[1].id]||0} pct={snapTotal>0?(snap[top3[1].id]||0)/snapTotal:0} canVote={canVote} isMe={myVoteId===top3[1].id} onVote={handleVote} isMobile={isMobile}/>}
