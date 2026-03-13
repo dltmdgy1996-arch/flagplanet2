@@ -426,25 +426,20 @@ export default function App(){
     return()=>unsub();
   },[]);
 
-  // ── 시뮬레이션: Ref만 업데이트, 리렌더 없음 ──
+  // ── 시뮬레이션: 티커/피드/방문자만 업데이트 (votes는 Firebase에서만) ──
   useEffect(()=>{
     const pool=CANDS.flatMap(c=>Array(Math.max(1,Math.round(c.v/2500000))).fill(c));
     const simId=setInterval(()=>{
       const r=pool[Math.floor(Math.random()*pool.length)];
-      const inc=Math.floor(Math.random()*10)+1;
-      votesRef.current[r.id]=(votesRef.current[r.id]||0)+inc;
-      totalRef.current+=inc;
+      // 방문자 카운트만 로컬 증가
       visitorsRef.current+=Math.floor(Math.random()*3)+1;
-      // 티커는 ref로만 추가 → 캔버스가 읽음
+      // 티커 피드만 업데이트 (투표수는 건드리지 않음)
       tickerItemsRef.current=[{name:r.name,nat:r.nat,color:r.color},...tickerItemsRef.current].slice(0,60);
-      // 실시간 피드는 자주 업데이트해도 사이드바만 영향
       setRecent(prev=>[{cid:r.id,t:"just now"},...prev].slice(0,14));
     },700);
 
-    // ── UI snapshot: 2초마다만 갱신 (리렌더 최소화) ──
+    // ── 방문자 카운트 UI 업데이트 ──
     const uiId=setInterval(()=>{
-      setSnap({...votesRef.current});
-      setSnapTotal(totalRef.current);
       setSnapVisitors(visitorsRef.current);
     },2000);
 
