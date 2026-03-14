@@ -403,6 +403,14 @@ export default function App(){
   },[isMobile]);
   const celebRef=useRef(null);
 
+  // AdSense 광고 초기화
+  useEffect(()=>{
+    try{
+      (window.adsbygoogle=window.adsbygoogle||[]).push({});
+      (window.adsbygoogle=window.adsbygoogle||[]).push({});
+    }catch(e){}
+  },[]);
+
   useEffect(()=>{
     const fn=()=>setIsMobile(window.innerWidth<768);
     window.addEventListener("resize",fn);return()=>window.removeEventListener("resize",fn);
@@ -600,9 +608,14 @@ export default function App(){
             <span style={{fontSize:9,color:"#2d2d50",fontWeight:700,letterSpacing:"0.1em"}}>📢 ADVERTISEMENT</span>
             <button onClick={()=>setShowPopupAd(false)} style={{background:"#111120",border:"1px solid #252540",borderRadius:6,color:"#6b7280",fontSize:12,width:22,height:22,cursor:"pointer",fontWeight:700,lineHeight:"22px",textAlign:"center",padding:0}}>✕</button>
           </div>
-          {/* ★ AdSense 승인 후 여기에 320×100 광고 코드 붙여넣기 ★ */}
-          <div id="popup-ad-mobile" style={{width:"100%",minHeight:60,background:"#0a0a18",border:"1px dashed #1e1e38",borderRadius:8,display:"flex",alignItems:"center",justifyContent:"center"}}>
-            <span style={{fontSize:9,color:"#2d2d50"}}>[ AdSense 승인 후 광고 코드 삽입 ]</span>
+          {/* ★ AdSense 모바일 팝업 배너 ★ */}
+          <div id="popup-ad-mobile" style={{width:"100%"}}>
+            <ins className="adsbygoogle"
+              style={{display:"block"}}
+              data-ad-client="ca-pub-1443152557365715"
+              data-ad-slot="7414898346"
+              data-ad-format="auto"
+              data-full-width-responsive="true"></ins>
           </div>
         </div>
       )}
@@ -610,9 +623,14 @@ export default function App(){
       {/* 상단 광고 */}
       <div style={{background:"#07070d",borderBottom:"1px solid #111120",padding:"6px 14px",display:"flex",alignItems:"center",justifyContent:"center",gap:8,flexShrink:0}}>
         <span style={{fontSize:9,color:"#1e1e38",flexShrink:0}}>📢 AD</span>
-        {/* ★ 728×90 AdSense 코드 붙여넣기 ★ */}
-        <div id="top-ad-728x90" style={{flex:1,maxWidth:728,height:36,background:"#080812",border:"1px dashed #111120",borderRadius:5,display:"flex",alignItems:"center",justifyContent:"center"}}>
-          <span style={{color:"#111120",fontSize:9}}>728×90 — Paste AdSense code here</span>
+        {/* ★ AdSense 상단 배너 ★ */}
+        <div id="top-ad-728x90" style={{flex:1,maxWidth:728}}>
+          <ins className="adsbygoogle"
+            style={{display:"block"}}
+            data-ad-client="ca-pub-1443152557365715"
+            data-ad-slot="7414898346"
+            data-ad-format="auto"
+            data-full-width-responsive="true"></ins>
         </div>
       </div>
 
