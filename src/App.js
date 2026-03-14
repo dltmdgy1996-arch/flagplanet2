@@ -568,7 +568,7 @@ export default function App(){
             <span style={{fontSize:9}}>📢</span>
             <span style={{fontSize:8,color:"#1e1e38",fontWeight:600,letterSpacing:"0.06em"}}>ADVERTISEMENT</span>
           </div>
-          <AdBanner slot="7414898346" style={{width:"100%",height:120,overflow:"hidden"}}/>
+          <AdBanner slot="7414898346" style={{width:"100%",minHeight:100}}/>
         </div>
       </div>
     );
@@ -608,9 +608,10 @@ export default function App(){
         </div>
       )}
 
-      {/* 상단 광고 - 높이 고정 */}
-      <div style={{background:"#07070d",borderBottom:"1px solid #111120",padding:"4px 14px",display:"flex",alignItems:"center",justifyContent:"center",gap:8,flexShrink:0,height:60,overflow:"hidden"}}>
-        <AdBanner slot="7414898346" style={{flex:1,maxWidth:728,height:50}}/>
+      {/* 상단 광고 */}
+      <div style={{background:"#07070d",borderBottom:"1px solid #111120",padding:"6px 14px",display:"flex",alignItems:"center",justifyContent:"center",gap:8,flexShrink:0}}>
+        <span style={{fontSize:9,color:"#1e1e38",flexShrink:0}}>📢 AD</span>
+        <AdBanner slot="7414898346" style={{flex:1,maxWidth:728}}/>
       </div>
 
       {/* 네비 */}
