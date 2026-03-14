@@ -225,6 +225,21 @@ const PDM=[
   {i:2,medal:"🥉",crown:"🥉",label:"3RD",sub:"",       ph:100,pc1:"#431407",pc2:"#2c0a02",ac:"#cd7f32"},
 ];
 
+/* ─── AdSense 광고 컴포넌트 ─── */
+const AdBanner=memo(function AdBanner({slot,style={}}){
+  useEffect(()=>{
+    try{(window.adsbygoogle=window.adsbygoogle||[]).push({});}catch(e){}
+  },[]);
+  return(
+    <ins className="adsbygoogle"
+      style={{display:"block",...style}}
+      data-ad-client="ca-pub-1443152557365715"
+      data-ad-slot={slot}
+      data-ad-format="auto"
+      data-full-width-responsive="true"/>
+  );
+});
+
 /* ─── 포디엄 카드 (모바일 30% 추가 축소 + 디자인 개선) ─── */
 const PodiumCard=memo(function PodiumCard({c,pdIdx,voteCount,pct,canVote,isMe,onVote,isMobile}){
   const p=PDM[pdIdx];
